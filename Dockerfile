@@ -1,48 +1,46 @@
 # --------------------------------------------
-# Base Image: Python 3.9 के साथ Slim Version
+# Base Image: Python 3.9 Slim Version
 # --------------------------------------------
 FROM python:3.9.7-slim-buster
 
 # --------------------------------------------
-# System Dependencies Install करें
+# Install System Dependencies
 # --------------------------------------------
 RUN apt-get update -y && apt-get upgrade -y \
     && apt-get install -y --no-install-recommends \
-        gcc \                  # C Compiler
-        libffi-dev \           # Foreign Function Interface
-        musl-dev \             # Musl C Library
-        ffmpeg \               # Video Processing
-        aria2 \                # Download Accelerator
-        python3-pip \          # Python Package Manager
-        libssl-dev \           # SSL/TLS Support
-        zlib1g-dev \           # Compression Library
-    && apt-get clean \         # Cache साफ़ करें
-    && rm -rf /var/lib/apt/lists/*  # Temporary Files हटाएं
+        gcc \
+        libffi-dev \
+        musl-dev \
+        ffmpeg \
+        aria2 \
+        python3-pip \
+        libssl-dev \
+        zlib1g-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # --------------------------------------------
-# Non-Root User बनाएं (Security के लिए जरूरी)
+# Create Non-Root User & Logs Directory
 # --------------------------------------------
 RUN useradd -m appuser && \
-    mkdir -p /app/logs && \    # Logs Directory बनाएं
-    chown appuser:appuser /app/logs  # Permissions Set करें
+    mkdir -p /app/logs && \
+    chown appuser:appuser /app/logs
 
 # --------------------------------------------
-# App Code Copy करें और Permissions Set करें
+# Copy Code & Set Permissions
 # --------------------------------------------
 COPY --chown=appuser:appuser . /app/
-WORKDIR /app/  # Working Directory Set करें
+WORKDIR /app/
 
 # --------------------------------------------
-# Python Dependencies Install करें
+# Install Python Dependencies
 # --------------------------------------------
 RUN pip3 install --no-cache-dir --upgrade --requirement requirements.txt
 
 # --------------------------------------------
-# Non-Root User पर Switch करें
+# Switch to Non-Root User
 # --------------------------------------------
 USER appuser
 
 # --------------------------------------------
-# Application Start करें + Logging Enable करें
-# --------------------------------------------
-CMD ["sh", "-c", "python3 modules/main.py >> /app/logs/app.log 2>&1"]
+#
