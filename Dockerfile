@@ -8,23 +8,23 @@ FROM python:3.9.7-slim-buster
 # --------------------------------------------
 RUN apt-get update -y && apt-get upgrade -y \
     && apt-get install -y --no-install-recommends \
-        gcc \                  # C compiler
-        libffi-dev \           # Foreign Function Interface
-        musl-dev \             # Musl C library
-        ffmpeg \               # Video processing
-        aria2 \                # Download accelerator
-        python3-pip \          # Python package manager
-        libssl-dev \           # SSL/TLS support
-        zlib1g-dev \           # Compression library
-    && apt-get clean \         # Clean package cache
-    && rm -rf /var/lib/apt/lists/*  # Remove temp files
+        gcc \
+        libffi-dev \
+        musl-dev \
+        ffmpeg \
+        aria2 \
+        python3-pip \
+        libssl-dev \
+        zlib1g-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # --------------------------------------------
 # Create Non-Root User & Logs Directory
 # --------------------------------------------
 RUN useradd -m appuser && \
     mkdir -p /app/logs && \
-    chown -R appuser:appuser /app/logs  # Set permissions
+    chown -R appuser:appuser /app/logs
 
 # --------------------------------------------
 # Copy App Code with Correct Permissions
