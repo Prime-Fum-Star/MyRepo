@@ -1,28 +1,22 @@
-FROM python:3.9.7-slim-buster
+# Use official lightweight Python image
+FROM python:3.10-slim
 
-RUN apt-get update -y && apt-get upgrade -y \
-    && apt-get install -y --no-install-recommends \
-        gcc \
-        libffi-dev \
-        musl-dev \
-        ffmpeg \
-        aria2 \
-        python3-pip \
-        libssl-dev \
-        zlib1g-dev \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+# Set working directory
+WORKDIR /app
 
-RUN useradd -m appuser && \
-    mkdir -p /app/logs && \
-    chown -R appuser:appuser /app/logs
+# Copy requirements file
+COPY requirements.txt .
 
-COPY --chown=appuser:appuser . /app/
-WORKDIR /app/
+# Install dependencies as root before switching user
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
-USER appuser  # Switch user BEFORE installing pip packages
+# Create non-root user and switch
+RUN useradd -m appuser
+USER appuser
 
-RUN pip3 install --no-cache-dir --upgrade pip && \
-    pip3 install --no-cache-dir -r requirements.txt
+# Copy remaining project files
+COPY . .
 
-CMD ["sh", "-c", "python3 modules/main.py >> /app/logs/app.log 2>&1"]
+# Set entry point
+CMD ["python", "main.py"]
