@@ -9,7 +9,7 @@ COPY requirements.txt .
 
 # Install dependencies as root before switching user
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+    pip install --no-cache-dir --break-system-packages -r requirements.txt
 
 # Create non-root user and switch
 RUN useradd -m appuser
