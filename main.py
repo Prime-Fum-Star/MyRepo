@@ -1,7 +1,7 @@
 import logging
 import os
 from telegram import Update
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+from telegram.ext import Filters, Updater, CommandHandler, MessageHandler
 from config import Config
 
 logging.basicConfig(
